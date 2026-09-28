@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>e-Maktab</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='110' viewBox='0 0 220 110'%3E%3Cg opacity='0.10'%3E%3Cpath d='M30 30 Q30 20 40 20 L55 20 Q65 20 65 30 L65 70 Q65 80 55 80 L40 80 Q30 80 30 70 Z' fill='none' stroke='white' stroke-width='3'/%3E%3Cpath d='M65 30 Q65 20 75 20 L90 20 Q100 20 100 30 L100 70 Q100 80 90 80 L75 80 Q65 80 65 70 Z' fill='none' stroke='white' stroke-width='3'/%3E%3Ctext x='52' y='62' font-family='Arial' font-weight='bold' font-size='32' fill='white' text-anchor='middle'%3Ee%3C/text%3E%3Cpath d='M40 20 Q47 8 55 15 Q62 8 70 20' fill='none' stroke='%23fbbf24' stroke-width='3'/%3E%3Ctext x='120' y='65' font-family='Arial' font-weight='bold' font-size='46' fill='white'%3Emaktab%3C/text%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 220px 110px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sahifa {
+  display: none;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.sahifa.faol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* LOGIN */
+.login-karta {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 440px;
+  padding: 40px 36px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: chiqish 0.7s ease;
+}
+
+@keyframes chiqish {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.logo-qism { text-align: center; margin-bottom: 24px; }
+
+.asosiy-logo {
+  filter: drop-shadow(0 6px 12px rgba(30, 58, 138, 0.3));
+  animation: suzish 3s ease-in-out infinite;
+  max-width: 240px;
+  height: auto;
+}
+
+@keyframes suzish {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+.tizim-nomi {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.tizim-nomi h1 {
+  font-size: 24px;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.tizim-nomi h1 span { color: #1e40af; }
+
+.tizim-nomi p {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 6px;
+}
+
+.forma-guruh { margin-bottom: 18px; }
+
+.forma-guruh label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.forma-guruh input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: 0.25s;
+  outline: none;
+  background: #f8fafc;
+  color: #1e293b;
+  font-family: inherit;
+}
+
+.forma-guruh input:focus {
+  border-color: #1e40af;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.12);
+}
+
+.kirish-tugma {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 6px 16px rgba(30, 64, 175, 0.35);
+  margin-top: 8px;
+}
+
+.kirish-tugma:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(30, 64, 175, 0.5);
+}
+
+.muallif {
+  text-align: center;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.muallif strong { color: #1e40af; font-weight: 700; }
+
+/* TANLASH */
+.tanlash-karta {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 800px;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: chiqish 0.7s ease;
+  text-align: center;
+}
+
+.tanlash-karta h2 {
+  font-size: 26px;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.tanlash-karta > p {
+  color: #64748b;
+  margin-bottom: 32px;
+  font-size: 14px;
+}
+
+.oynalar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.oyna-tanlov {
+  padding: 32px 24px;
+  border: 2px solid #e2e8f0;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: 0.3s;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.oyna-tanlov:hover {
+  border-color: #1e40af;
+  background: #ffffff;
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(30, 64, 175, 0.15);
+}
+
+.oyna-tanlov .ikonka {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.oyna-tanlov h3 {
+  font-size: 20px;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.oyna-tanlov p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* DASHBOARD */
+.dashboard {
+  width: 100%;
+  max-width: 1100px;
+  background: #f1f5f9;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: chiqish 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.dash-header {
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+}
+
+.dash-header .logo-kichik svg { height: 36px; width: auto; }
+
+.dash-header .foydalanuvchi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.dash-header .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fbbf24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.chiqish-tugma {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.chiqish-tugma:hover { background: rgba(255,255,255,0.25); }
+
+.dash-body { display: flex; flex: 1; overflow: hidden; }
+
+.sidebar {
+  width: 240px;
+  background: white;
+  padding: 20px 0;
+  border-right: 1px solid #e2e8f0;
+  overflow-y: auto;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  color: #475569;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.sidebar a:hover { background: #f1f5f9; color: #1e40af; }
+
+.sidebar a.faol {
+  background: #eff6ff;
+  color: #1e40af;
+  border-left-color: #1e40af;
+  font-weight: 600;
+}
+
+.sidebar .bolim-sarlavha {
+  padding: 16px 24px 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.content { flex: 1; padding: 28px; overflow-y: auto; }
+
+.content h2 {
+  font-size: 22px;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.content .sahifa-tavsif {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-karta {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-left: 4px solid #1e40af;
+  transition: 0.2s;
+}
+
+.stat-karta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.stat-karta .stat-ikonka { font-size: 24px; margin-bottom: 10px; }
+
+.stat-karta .stat-son {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.stat-karta .stat-nom {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.modul-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.modul-karta {
+  background: white;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: 0.25s;
+  border: 1px solid #e2e8f0;
+}
+
+.modul-karta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(30, 64, 175, 0.12);
+  border-color: #1e40af;
+}
+
+.modul-karta .modul-ikonka {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+
+.modul-karta h4 {
+  font-size: 16px;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.modul-karta p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.jadval {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.jadval table { width: 100%; border-collapse: collapse; }
+
+.jadval th {
+  background: #f8fafc;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.jadval td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.jadval tr:last-child td { border-bottom: none; }
+.jadval tr:hover td { background: #f8fafc; }
+
+.belgi {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.belgi.yaxshi { background: #dcfce7; color: #166534; }
+.belgi.orta   { background: #fef3c7; color: #92400e; }
+.belgi.past   { background: #fee2e2; color: #991b1b; }
+
+@media (max-width: 768px) {
+  .oynalar { grid-template-columns: 1fr; }
+  .dash-body { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; }
+  .content { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 1. KIRISH -->
+<div class="sahifa faol" id="sahifa-login">
+  <div class="login-karta">
+    <div class="logo-qism">
+      <svg class="asosiy-logo" viewBox="0 0 340 110" xmlns="http://www.w3.org/2000/svg">
+        <path d="M25 30 Q25 18 38 18 L58 18 Q72 18 72 30 L72 82 Q72 94 58 94 L38 94 Q25 94 25 82 Z" fill="none" stroke="#1e3a8a" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M72 30 Q72 18 86 18 L106 18 Q120 18 120 30 L120 82 Q120 94 106 94 L86 94 Q72 94 72 82 Z" fill="none" stroke="#1e3a8a" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M38 18 Q47 4 56 12 Q65 4 74 12 Q83 4 92 18" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"/>
+        <line x1="38" y1="14" x2="34" y2="8" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="56" y1="6" x2="56" y2="0" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="74" y1="6" x2="74" y2="0" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="92" y1="14" x2="96" y2="8" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="72" y="72" font-family="Arial" font-weight="bold" font-size="44" fill="#1e3a8a" text-anchor="middle">e</text>
+        <text x="130" y="75" font-family="Arial" font-weight="bold" font-size="52" fill="#1e3a8a">maktab</text>
+      </svg>
+    </div>
+
+    <div class="tizim-nomi">
+      <h1>e-<span>Maktab</span> tizimi</h1>
+      <p>Ta'lim muassasalari uchun elektron platforma</p>
+    </div>
+
+    <form onsubmit="kirish(event)">
+      <div class="forma-guruh">
+        <label for="login">Login yoki Email</label>
+        <input type="text" id="login" placeholder="misol@emaktab.uz" required>
+      </div>
+      <div class="forma-guruh">
+        <label for="parol">Parol</label>
+        <input type="password" id="parol" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="kirish-tugma">Kirish</button>
+    </form>
+
+    <div class="muallif">
+      Dastur muallifi: <strong>Nosirov Botirjon</strong>
+    </div>
+  </div>
+</div>
+
+<!-- 2. TANLASH -->
+<div class="sahifa" id="sahifa-tanlash">
+  <div class="tanlash-karta">
+    <h2>Qaysi oynani ochmoqchisiz?</h2>
+    <p>Tizimda ikki xil foydalanuvchi turi mavjud</p>
+    <div class="oynalar">
+      <div class="oyna-tanlov" onclick="oynaOch('oqituvchi')">
+        <span class="ikonka">👨‍🏫</span>
+        <h3>O'qituvchi oynasi</h3>
+        <p>Darslar, baholar, o'quvchilar, davomat va boshqa boshqaruv bo'limlari</p>
+      </div>
+      <div class="oyna-tanlov" onclick="oynaOch('oquvchi')">
+        <span class="ikonka">👨‍🎓</span>
+        <h3>O'quvchi oynasi</h3>
+        <p>Dars jadvali, baholar, uy vazifalari, e'lonlar va shaxsiy kabinet</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. O'QITUVCHI -->
+<div class="sahifa" id="sahifa-oqituvchi">
+  <div class="dashboard">
+    <div class="dash-header">
+      <div class="logo-kichik">
+        <svg viewBox="0 0 340 110" xmlns="http://www.w3.org/2000/svg">
+          <path d="M25 30 Q25 18 38 18 L58 18 Q72 18 72 30 L72 82 Q72 94 58 94 L38 94 Q25 94 25 82 Z" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M72 30 Q72 18 86 18 L106 18 Q120 18 120 30 L120 82 Q120 94 106 94 L86 94 Q72 94 72 82 Z" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+          <text x="72" y="72" font-family="Arial" font-weight="bold" font-size="44" fill="white" text-anchor="middle">e</text>
+          <text x="130" y="75" font-family="Arial" font-weight="bold" font-size="52" fill="white">maktab</text>
+        </svg>
+      </div>
+      <div class="foydalanuvchi">
+        <div class="avatar">N</div>
+        <span>Nosirov Botirjon</span>
+        <button class="chiqish-tugma" onclick="chiqish()">Chiqish</button>
+      </div>
+    </div>
+
+    <div class="dash-body">
+      <aside class="sidebar">
+        <div class="bolim-sarlavha">Asosiy</div>
+        <a href="#" class="faol">📊 Boshqaruv paneli</a>
+        <a href="#">📚 Darslarim</a>
+        <a href="#">👥 O'quvchilarim</a>
+        <a href="#">📝 Baholash</a>
+        <div class="bolim-sarlavha">Boshqaruv</div>
+        <a href="#">📅 Davomat</a>
+        <a href="#">📋 Uy vazifalari</a>
+        <a href="#">📢 E'lonlar</a>
+        <a href="#">📈 Hisobotlar</a>
+        <div class="bolim-sarlavha">Sozlamalar</div>
+        <a href="#">⚙️ Profil</a>
+        <a href="#">🔔 Bildirishnomalar</a>
+      </aside>
+
+      <main class="content">
+        <h2>Xush kelibsiz, Botirjon aka! 👋</h2>
+        <p class="sahifa-tavsif">Bugungi darslaringiz va o'quvchilar statistikasi</p>
+
+        <div class="stat-grid">
+          <div class="stat-karta">
+            <div class="stat-ikonka">👥</div>
+            <div class="stat-son">124</div>
+            <div class="stat-nom">O'quvchilar</div>
+          </div>
+          <div class="stat-karta">
+            <div class="stat-ikonka">📚</div>
+            <div class="stat-son">6</div>
+            <div class="stat-nom">Darslar</div>
+          </div>
+          <div class="stat-karta">
+            <div class="stat-ikonka">✅</div>
+            <div class="stat-son">96%</div>
+            <div class="stat-nom">Davomat</div>
+          </div>
+          <div class="stat-karta">
+            <div class="stat-ikonka">📝</div>
+            <div class="stat-son">18</div>
+            <div class="stat-nom">Tekshirilmagan</div>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 28px; font-size: 18px;">Tezkor bo'limlar</h2>
+        <p class="sahifa-tavsif">Kerakli bo'limni tanlang</p>
+
+        <div class="modul-grid">
+          <div class="modul-karta">
+            <div class="modul-ikonka">📝</div>
+            <h4>Baholash</h4>
+            <p>O'quvchilarga baho qo'yish va tahrirlash</p>
+          </div>
+          <div class="modul-karta">
+            <div class="modul-ikonka">📅</div>
+            <h4>Davomat</h4>
+            <p>Kunlik davomatni belgilash</p>
+          </div>
+          <div class="modul-karta">
+            <div class="modul-ikonka">📋</div>
+            <h4>Uy vazifasi</h4>
+            <p>Yangi vazifa berish va tekshirish</p>
+          </div>
+          <div class="modul-karta">
+            <div class="modul-ikonka">📊</div>
+            <h4>Hisobotlar</h4>
+            <p>Choraklik va yillik hisobotlar</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- 4. O'QUVCHI -->
+<div class="sahifa" id="sahifa-oquvchi">
+  <div class="dashboard">
+    <div class="dash-header">
+      <div class="logo-kichik">
+        <svg viewBox="0 0 340 110" xmlns="http://www.w3.org/2000/svg">
+          <path d="M25 30 Q25 18 38 18 L58 18 Q72 18 72 30 L72 82 Q72 94 58 94 L38 94 Q25 94 25 82 Z" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M72 30 Q72 18 86 18 L106 18 Q120 18 120 30 L120 82 Q120 94 106 94 L86 94 Q72 94 72 82 Z" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+          <text x="72" y="72" font-family="Arial" font-weight="bold" font-size="44" fill="white" text-anchor="middle">e</text>
+          <text x="130" y="75" font-family="Arial" font-weight="bold" font-size="52" fill="white">maktab</text>
+        </svg>
+      </div>
+      <div class="foydalanuvchi">
+        <div class="avatar" style="background:#22c55e;">A</div>
+        <span>Ali Valiyev</span>
+        <button class="chiqish-tugma" onclick="chiqish()">Chiqish</button>
+      </div>
+    </div>
+
+    <div class="dash-body">
+      <aside class="sidebar">
+        <div class="bolim-sarlavha">Asosiy</div>
+        <a href="#" class="faol">🏠 Mening kabinetim</a>
+        <a href="#">📅 Dars jadvali</a>
+        <a href="#">📝 Baholarim</a>
+        <a href="#">📋 Uy vazifalari</a>
+        <div class="bolim-sarlavha">Qo'shimcha</div>
+        <a href="#">📢 E'lonlar</a>
+        <a href="#">📚 Kutubxona</a>
+        <a href="#">💬 Xabarlar</a>
+        <div class="bolim-sarlavha">Sozlamalar</div>
+        <a href="#">⚙️ Profil</a>
+      </aside>
+
+      <main class="content">
+        <h2>Salom, Ali! 👋</h2>
+        <p class="sahifa-tavsif">Bugungi darslaringiz va so'nggi baholaringiz</p>
+
+        <div class="stat-grid">
+          <div class="stat-karta" style="border-left-color: #22c55e;">
+            <div class="stat-ikonka">⭐</div>
+            <div class="stat-son">4.6</div>
+            <div class="stat-nom">O'rtacha baho</div>
+          </div>
+          <div class="stat-karta" style="border-left-color: #f59e0b;">
+            <div class="stat-ikonka">✅</div>
+            <div class="stat-son">94%</div>
+            <div class="stat-nom">Davomat</div>
+          </div>
+          <div class="stat-karta" style="border-left-color: #3b82f6;">
+            <div class="stat-ikonka">📚</div>
+            <div class="stat-son">7</div>
+            <div class="stat-nom">Fanlar</div>
+          </div>
+          <div class="stat-karta" style="border-left-color: #ef4444;">
+            <div class="stat-ikonka">📝</div>
+            <div class="stat-son">3</div>
+            <div class="stat-nom">Yangi vazifa</div>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 28px; font-size: 18px;">So'nggi baholar</h2>
+        <p class="sahifa-tavsif">Oxirgi 5 ta baho</p>
+
+        <div class="jadval">
+          <table>
+            <thead>
+              <tr>
+                <th>Fan</th>
+                <th>O'qituvchi</th>
+                <th>Baho</th>
+                <th>Sana</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Matematika</td><td>N. Botirjon</td><td><span class="belgi yaxshi">5</span></td><td>28.09.2026</td></tr>
+              <tr><td>Fizika</td><td>R. Karimov</td><td><span class="belgi yaxshi">5</span></td><td>27.09.2026</td></tr>
+              <tr><td>Ona tili</td><td>M. Salimova</td><td><span class="belgi orta">4</span></td><td>26.09.2026</td></tr>
+              <tr><td>Ingliz tili</td><td>D. Yusupova</td><td><span class="belgi yaxshi">5</span></td><td>25.09.2026</td></tr>
+              <tr><td>Kimyo</td><td>A. Toshmatov</td><td><span class="belgi past">3</span></td><td>24.09.2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<script>
+function sahifaOch(id) {
+  var hamma = document.querySelectorAll('.sahifa');
+  for (var i = 0; i < hamma.length; i++) {
+    hamma[i].classList.remove('faol');
+  }
+  document.getElementById(id).classList.add('faol');
+}
+
+function kirish(event) {
+  event.preventDefault();
+  var login = document.getElementById('login').value;
+  var parol = document.getElementById('parol').value;
+  if (login === '' || parol === '') {
+    alert('Login va parolni kiriting!');
+    return;
+  }
+  sahifaOch('sahifa-tanlash');
+}
+
+function oynaOch(tur) {
+  if (tur === 'oqituvchi') {
+    sahifaOch('sahifa-oqituvchi');
+  } else if (tur === 'oquvchi') {
+    sahifaOch('sahifa-oquvchi');
+  }
+}
+
+function chiqish() {
+  document.getElementById('login').value = '';
+  document.getElementById('parol').value = '';
+  sahifaOch('sahifa-login');
+}
+</script>
+
+</body>
+</html>
